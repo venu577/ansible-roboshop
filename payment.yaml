@@ -1,0 +1,57 @@
+- name: configure payment component
+  hosts: payment
+  become: yes
+  tasks:
+  - name: install python packages
+    ansible.builtin.dnf:
+     name: "{{ item }}"
+     state: installed
+    loop:
+    - python3
+    - gcc
+    - python3-devel 
+
+  - name: create roboshop system user
+    ansible.builtin.user:
+     name: roboshop
+     shell: /sbin/nologin
+     system: true #system user
+     home: /app
+
+  - name: create app directory
+    ansible.builtin.file:
+     path: /app
+     state: directory
+
+  - name: download payment component code
+    ansible.builtin.get_url:
+     url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+     dest: /tmp/shipping.zip          
+
+  - name: extract shipping component code
+    ansible.builtin.unarchive:
+     src: /tmp/shipping.zip
+     dest: /app
+     remote_src: yes
+
+  - name: install python dependencies
+    ansible.builtin.pip:
+     requirements: requirements.txt   
+     executable: pip3.9
+    args:
+      chdir: /app # change directory to /app
+
+  - name: copy payment service to system directory
+    ansible.builtin.copy:
+     name: payment.service
+     dest: /etc/systemd/system/payment.service
+
+  - name: daemon reload
+    ansible.builtin.systemd_service:
+     daemon_reload: true
+
+  - name: start and enable shipping service
+    ansible.builtin.service:
+     name: shipping
+     state: started
+     enabled: yes
