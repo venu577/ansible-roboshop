@@ -56,5 +56,9 @@
       state: started
       enabled: yes
 
+  - name: restart payment service
+    ansible.builtin.systemd:
+      name: payment
+      state: restarted 
 
   
