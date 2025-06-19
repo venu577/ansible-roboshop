@@ -1,6 +1,6 @@
 - name: configuring mongodb server
-  hosts: mongodb
   become: yes
+  hosts: mongodb 
   tasks:
   - name: copy mongodb repo
     ansible.builtin.copy:
@@ -12,7 +12,7 @@
      name: mongodb-org
      state: present
 
-  - name: start and enable mongodb service
+  - name: start and enable mongodb
     ansible.builtin.service:
      name: mongod
      state: started
@@ -24,7 +24,7 @@
      regexp: '127.0.0.1'
      replace: '0.0.0.0'
 
-  - name: restart mongodb service
+  - name: restart mongodb
     ansible.builtin.service:
      name: mongod
      state: restarted            

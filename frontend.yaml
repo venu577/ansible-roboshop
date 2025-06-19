@@ -1,39 +1,39 @@
-- name: configuring frontend component
+- name: configure frontend component
   hosts: frontend
   become: yes
   tasks:
-  - name: disabling default nginx
+  - name: disable default nginx
     ansible.builtin.command: dnf module disable nginx -y
-  - name: enabling default nginx
+  - name: enable default nginx
     ansible.builtin.command: dnf module enable nginx:1.24 -y
 
-  - name: installing nginx
+  - name: install nginx
     ansible.builtin.dnf:
       name: nginx
       state: present
 
-  - name: start and enable nginx service
+  - name: start and enable nginx
     ansible.builtin.service:
       name: nginx
       state: started
       enabled: yes
 
-  - name: removing html directory
+  - name: remove html directory
     ansible.builtin.file:
       path: /usr/share/nginx/html
       state: absent
 
-  - name: creating html directory
+  - name: create html directory
     ansible.builtin.file:
      path: /usr/share/nginx/html             
      state: directory
 
-  - name: download frontend component code
+  - name: download frontend code
     ansible.builtin.get_url:
       url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
       dest: /tmp/frontend.zip      
 
-  - name: extract frontend component code
+  - name: extract frontend code
     ansible.builtin.unarchive:
       src: /tmp/frontend.zip
       dest: /usr/share/nginx/html
@@ -41,17 +41,17 @@
       #this module thinks file exist on ansible control server, needs to extract on to remote machine
       #remote_src: yes means files already exist in frontend server  
 
-  - name: remove default nginx config
+  - name: remove default nginx conf
     ansible.builtin.file:
      path: etc/nginx/nginx.conf 
      state: absent
 
-  - name: copy frontend nginx config
+  - name: copy roboshop nginx conf
     ansible.builtin.copy:
      src: nginx.conf
      dest: /etc/nginx/nginx.conf
 
-  - name: restart nginx service
+  - name: restart nginx
     ansible.builtin.service:
      name: nginx
      state: restarted            

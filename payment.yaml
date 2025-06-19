@@ -1,4 +1,4 @@
-- name: conigure payment server
+- name: configure payment server
   become: yes
   hosts: payment
   tasks:
@@ -54,11 +54,4 @@
     ansible.builtin.service:
       name: payment
       state: started
-      enabled: yes
-
-  - name: restart payment service
-    ansible.builtin.systemd:
-      name: payment
-      state: restarted 
-
-  
+      enabled: yes  
