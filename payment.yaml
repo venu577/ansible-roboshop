@@ -1,57 +1,60 @@
-- name: configure payment component
-  hosts: payment
+- name: conigure payment server
   become: yes
+  hosts: payment
   tasks:
-  - name: install python packages
+  - name: install python3 packages
     ansible.builtin.dnf:
-     name: "{{ item }}"
-     state: installed
+      name: "{{ item }}"
+      state: installed
     loop:
-    - python3
-    - gcc
-    - python3-devel 
+    - python3 
+    - gcc 
+    - python3-devel
 
   - name: create app directory
     ansible.builtin.file:
-     path: /app
-     state: directory
+      path: /app
+      state: directory
 
   - name: create roboshop system user
     ansible.builtin.user:
-     name: roboshop
-     shell: /sbin/nologin
-     system: true #system user
-     home: /app   
+      name: roboshop
+      shell: /sbin/nologin
+      system: true
+      home: /app
 
-  - name: download payment component code
+  - name: download payment code
     ansible.builtin.get_url:
-     url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
-     dest: /tmp/shipping.zip          
+      url: https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
+      dest: /tmp/payment.zip
 
-  - name: extract shipping component code
+  - name: extract payment code
     ansible.builtin.unarchive:
-     src: /tmp/shipping.zip
-     dest: /app
-     remote_src: yes
+      src: /tmp/payment.zip
+      dest: /app
+      remote_src: yes
 
   - name: install dependencies
     ansible.builtin.pip:
-     requirements: requirements.txt   
-     executable: pip3.9
+      requirements: requirements.txt
+      executable: pip3.9
     args:
-      chdir: /app # change directory to /app
+      chdir: /app
 
-  - name: copy payment service to system directory
+  - name: copy payment service
     ansible.builtin.copy:
-     name: payment.service
-     dest: /etc/systemd/system/payment.service
+      src: payment.service
+      dest: /etc/systemd/system/payment.service
 
   - name: daemon reload
     ansible.builtin.systemd_service:
-     daemon_reload: true
+      daemon_reload: true
 
-  - name: start and enable shipping service
+  - name: enable and start payment
     ansible.builtin.service:
-     name: shipping
-     state: started
-     enabled: yes
+      name: payment
+      state: started
+      enabled: yes
+
+
+  
