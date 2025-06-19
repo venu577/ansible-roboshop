@@ -1,5 +1,5 @@
 - name: install redis component
-  hostes: redis
+  hosts: redis
   become: yes
   tasks: 
   - name: disable redis default module
@@ -29,5 +29,4 @@
       name: redis
       state: started
       enabled: yes
-      
-                 
+
