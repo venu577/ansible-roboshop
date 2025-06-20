@@ -79,7 +79,7 @@
     community.mysql.mysql_db:
      name: all
      login_user: root
-     login_password: RoboShop@1
+     login_password: Venu@2255
      login_host: mysql.newgenrobots.site  
      state: import
      target: "{{ item }}"
