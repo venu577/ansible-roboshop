@@ -35,7 +35,6 @@
      src: /tmp/cart.zip
      dest: /app
      remote_src: yes
-     #this module thinks file exist on ansible control server, needs to extract on to remote machine
      #remote_src: yes means files already exist in cart server
 
   - name: install dependencies
